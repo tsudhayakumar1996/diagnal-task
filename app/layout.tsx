@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Titillium_Web } from "next/font/google";
 import "./globals.css";
+import PostContextProvider from "@/app/context/posts/postContextProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const titillium_web = Titillium_Web({ weight: ["200"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={titillium_web.className}>
+        <PostContextProvider>{children}</PostContextProvider>
+      </body>
     </html>
   );
 }
