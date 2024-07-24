@@ -10,7 +10,7 @@ const PosterView = () => {
   const { data, loading, total, fetchPosts } = usePostContext();
 
   return (
-    <div className="flex-1 overflow-y-auto p-3" id="scrollableDiv">
+    <div className="flex-1 overflow-y-auto no-scrollbar p-3" id="scrollableDiv">
       <InfiniteScroll
         dataLength={data.length}
         next={() => fetchPosts()}
