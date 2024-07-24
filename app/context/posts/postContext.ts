@@ -28,6 +28,8 @@ export interface postContextProps {
   total: number;
   loading: LoadingIndicationProps;
   fetchPosts: () => Promise<void>;
+  filterPostsHandler: (q: string) => void;
+  clearFilterHandler: () => void;
 }
 
 export const PostContext = React.createContext({} as postContextProps);

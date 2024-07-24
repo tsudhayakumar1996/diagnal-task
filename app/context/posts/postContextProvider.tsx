@@ -13,10 +13,11 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
   // state
   const [page, setpage] = useState(1);
   const [data, setdata] = useState<ContentProps[]>([]);
+  const [dataCopy, setdataCopy] = useState<ContentProps[]>([]);
   const [total, settotal] = useState(0);
   const [loading, setloading] = useState<LoadingIndicationProps>("initial");
 
-  // cb
+  // fetch cb
   const fetchPosts = useCallback(async () => {
     setloading("loading");
     try {
@@ -27,6 +28,7 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
       const toJson: PostsRes = await res.json();
       // set context with existing data
       setdata([...data, ...toJson.page["content-items"].content]);
+      setdataCopy([...data, ...toJson.page["content-items"].content]);
       setpage(page + 1);
       settotal(Number(toJson.page["total-content-items"]));
     } catch (error) {
@@ -35,6 +37,19 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
       setloading("completed");
     }
   }, [page, data]);
+
+  // filter cb
+  const filterPostsHandler = useCallback(
+    async (q: string) => {
+      const filteredPosts = dataCopy.filter((post) => post.name.startsWith(q));
+      setdata(filteredPosts);
+    },
+    [dataCopy]
+  );
+
+  const clearFilterHandler = useCallback(() => {
+    setdata(dataCopy);
+  }, [dataCopy]);
 
   // effect
   useEffect(() => {
@@ -51,6 +66,8 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
         total,
         loading,
         fetchPosts,
+        filterPostsHandler,
+        clearFilterHandler,
       }}
     >
       {children}

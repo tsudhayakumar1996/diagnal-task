@@ -1,1 +1,2 @@
-export const apiGet = async (endPoint: string) => fetch(endPoint);
+// get
+export const apiGet = (endPoint: string) => fetch(endPoint);
