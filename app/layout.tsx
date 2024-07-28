@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={titillium_web.className}>
-        <ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <PostContextProvider>{children}</PostContextProvider>
         </ThemeProvider>
       </body>
