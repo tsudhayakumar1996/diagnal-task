@@ -9,17 +9,17 @@ const NavBar = () => {
   const { clearFilterHandler, isFilterApplied } = usePostContext();
 
   return (
-    <div className="pt-4 pb-1 px-2 flex justify-between items-center z-10">
+    <div className="pt-4 pb-1 px-2 flex justify-between items-center">
       {/* nav bg */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={"nav_bar_bg.png"}
         style={{ height: "90px", width: "100%" }}
         alt="nav-bg"
-        className="absolute top-0 left-0 -z-10"
+        className="absolute top-0 left-0"
       />
       {/* back button */}
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center z-10">
         <Image
           src={`${process.env.NEXT_PUBLIC_API_BASE_URL}images/Back.png`}
           alt="back-icon"
