@@ -13,48 +13,76 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
   // state
   const [page, setpage] = useState(1);
   const [data, setdata] = useState<ContentProps[]>([]);
-  const [dataCopy, setdataCopy] = useState<ContentProps[]>([]);
+  const [cachedData, setcachedData] = useState<ContentProps[]>([]);
   const [total, settotal] = useState(0);
   const [loading, setloading] = useState<LoadingIndicationProps>("initial");
+  const [error, seterror] = useState({
+    isError: false,
+    msg: "",
+  });
+  const [isFilterApplied, setisFilterApplied] = useState(false);
+  const [filterKey, setfilterKey] = useState("");
 
   // fetch cb
-  const fetchPosts = useCallback(async () => {
-    setloading("loading");
-    try {
-      // api call
-      const res = await apiGet(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}data/page${page}.json`
-      );
-      const toJson: PostsRes = await res.json();
-      // set context with existing data
-      setdata([...data, ...toJson.page["content-items"].content]);
-      setdataCopy([...data, ...toJson.page["content-items"].content]);
-      setpage(page + 1);
-      settotal(Number(toJson.page["total-content-items"]));
-    } catch (error) {
-      console.log("An fetch error occured");
-    } finally {
-      setloading("completed");
-    }
-  }, [page, data]);
+  const fetchPosts = useCallback(
+    async (activePage: number) => {
+      setloading("loading");
+      try {
+        // api call
+        const res = await apiGet(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}data/page${activePage}.json`
+        );
+        const toJson: PostsRes = await res.json();
+        // set context with existing data
+        if (activePage === 1) {
+          // fresh data
+          setdata(toJson.page["content-items"].content);
+          setcachedData(toJson.page["content-items"].content);
+        } else {
+          // prev data exists
+          setdata([...data, ...toJson.page["content-items"].content]);
+          setcachedData([...data, ...toJson.page["content-items"].content]);
+        }
+        settotal(Number(toJson.page["total-content-items"]));
+        setpage(activePage + 1);
+      } catch (error: any) {
+        seterror({
+          isError: true,
+          msg: error.message,
+        });
+      } finally {
+        setloading("completed");
+      }
+    },
+    [data]
+  );
 
   // filter cb
   const filterPostsHandler = useCallback(
     async (q: string) => {
-      const filteredPosts = dataCopy.filter((post) => post.name.startsWith(q));
+      const lowerCaseSearchTerm = q.toLowerCase();
+      const filteredPosts = cachedData.filter((post) =>
+        post.name.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+      console.log(q, lowerCaseSearchTerm, filteredPosts, "filtered posts...");
       setdata(filteredPosts);
+      setisFilterApplied(true);
+      setfilterKey(q);
     },
-    [dataCopy]
+    [cachedData]
   );
 
   const clearFilterHandler = useCallback(() => {
-    setdata(dataCopy);
-  }, [dataCopy]);
+    setisFilterApplied(false);
+    setpage(1);
+    fetchPosts(1);
+    setfilterKey("");
+  }, [setpage, setisFilterApplied, fetchPosts]);
 
   // effect
   useEffect(() => {
     // initial fetch
-    fetchPosts();
+    fetchPosts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,6 +93,9 @@ const PostContextProvider = ({ children }: { children: ReactNode }) => {
         data,
         total,
         loading,
+        error,
+        isFilterApplied,
+        filterKey,
         fetchPosts,
         filterPostsHandler,
         clearFilterHandler,

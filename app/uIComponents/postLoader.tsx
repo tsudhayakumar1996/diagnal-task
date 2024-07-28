@@ -1,6 +1,6 @@
 import ColsThreeContainer from "@/app/container/colsThreeContainer";
 import React from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PostLoader = () => {
   // const
@@ -11,11 +11,8 @@ const PostLoader = () => {
       <ColsThreeContainer>
         {arr.map((e) => (
           <div key={e}>
-            <LazyLoadImage
-              src={"placeholder_for_missing_posters.png"}
-              alt="loading-img"
-            />
-            <div className="h-4 rounded-md bg-stone-800 w-full mb-3 mt-2"></div>
+            <Skeleton className="w-full h-40 rounded-md bg-slate-700" />
+            <Skeleton className="w-full h-5 mt-3 rounded-md bg-slate-700" />
           </div>
         ))}
       </ColsThreeContainer>

@@ -22,12 +22,20 @@ export type ContentProps = {
   "poster-image": string;
 };
 
+type ErrorProp = {
+  isError: boolean;
+  msg: string;
+};
+
 export interface postContextProps {
   page: number;
   data: ContentProps[];
   total: number;
   loading: LoadingIndicationProps;
-  fetchPosts: () => Promise<void>;
+  error: ErrorProp;
+  isFilterApplied: boolean;
+  filterKey: string;
+  fetchPosts: (page: number) => Promise<void>;
   filterPostsHandler: (q: string) => void;
   clearFilterHandler: () => void;
 }

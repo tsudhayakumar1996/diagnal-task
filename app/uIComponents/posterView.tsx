@@ -1,20 +1,38 @@
 "use client";
 
 import InfiniteScroll from "react-infinite-scroll-component";
-import { usePostContext } from "../context/posts/usePostContext";
-import PostCard from "./postCard";
+import { usePostContext } from "@/app/context/posts/usePostContext";
 import ColsThreeContainer from "@/app/container/colsThreeContainer";
+import { EmptyUI, ErrorUI, PostCard } from "@/app/uIComponents";
 
 const PosterView = () => {
   // context
-  const { data, loading, total, fetchPosts } = usePostContext();
+  const {
+    data,
+    isFilterApplied,
+    loading,
+    error: { isError },
+    total,
+    page,
+    fetchPosts,
+  } = usePostContext();
+
+  console.log(data, "data is here...");
+
+  if (isError) {
+    return <ErrorUI />;
+  }
+
+  if (data.length === 0 && loading === "completed") {
+    return <EmptyUI />;
+  }
 
   return (
     <div className="flex-1 overflow-y-auto no-scrollbar p-3" id="scrollableDiv">
       <InfiniteScroll
         dataLength={data.length}
-        next={() => fetchPosts()}
-        hasMore={total > data.length}
+        next={() => fetchPosts(page)}
+        hasMore={total > data.length && !isFilterApplied}
         loader={<></>}
         scrollableTarget="scrollableDiv"
       >

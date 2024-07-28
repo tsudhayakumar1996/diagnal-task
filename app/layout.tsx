@@ -3,6 +3,7 @@ import { Titillium_Web } from "next/font/google";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 import PostContextProvider from "@/app/context/posts/postContextProvider";
+import { ThemeProvider } from "@/app/provider/themeProvider";
 
 const titillium_web = Titillium_Web({ weight: ["200"], subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={titillium_web.className}>
-        <PostContextProvider>{children}</PostContextProvider>
+        <ThemeProvider>
+          <PostContextProvider>{children}</PostContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

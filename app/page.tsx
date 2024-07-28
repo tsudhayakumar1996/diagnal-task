@@ -1,9 +1,8 @@
 "use client";
 
 import RootContainer from "@/app/container/rootContainer";
-import NavBar from "@/app/uIComponents/navBar";
+import { NavBar, PostLoader } from "@/app/uIComponents";
 import { lazy, Suspense } from "react";
-import PostLoader from "@/app/uIComponents/postLoader";
 const PosterView = lazy(() =>
   delayForDemo(import("@/app/uIComponents/posterView"))
 );
